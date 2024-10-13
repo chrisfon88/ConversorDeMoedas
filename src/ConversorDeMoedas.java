@@ -15,7 +15,7 @@ public class ConversorDeMoedas {
     }
 
     public Conversao obterConversao(String moedaOrigem, String moedaDestino, double valor) throws IOException, InterruptedException {
-        String apiKey = "4b49da5d6df2699559769d1c"; // Substitua pela sua chave de API
+        String apiKey = "sua-chave-de-api"; // Substitua pela sua chave de API
         String url = "https://v6.exchangerate-api.com/v6/" + apiKey + "/pair/" + moedaOrigem + "/" + moedaDestino + "/" + valor;
 
         HttpRequest request = HttpRequest.newBuilder()
@@ -25,10 +25,8 @@ public class ConversorDeMoedas {
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-        // Exibir a resposta completa da API para depuração
         System.out.println("Resposta completa da API: " + response.body());
 
-        // Verificar o status da resposta
         if (response.statusCode() != 200) {
             System.out.println("Erro: Solicitação falhou com código HTTP: " + response.statusCode());
             return null;
@@ -37,7 +35,6 @@ public class ConversorDeMoedas {
         Gson gson = new Gson();
         Conversao conversao = gson.fromJson(response.body(), Conversao.class);
 
-        // Verificar se o resultado é bem-sucedido e tratar diretamente a taxa de conversão
         if (conversao.getResultado().equals("success")) {
             return conversao;
         } else {
@@ -63,7 +60,6 @@ public class ConversorDeMoedas {
                 String moedaOrigem, moedaDestino;
                 double valor = -1;
 
-                // Validar moeda de origem
                 do {
                     System.out.println("Escolha a moeda de origem e digite somente a sigla: (" +
                             "USD - Dólar dos Estados Unidos, " +
@@ -78,7 +74,6 @@ public class ConversorDeMoedas {
                     }
                 } while (!conversor.moedaValida(moedaOrigem));
 
-                // Validar moeda de destino
                 do {
                     System.out.println("Escolha a moeda de destino e digite somente a sigla: (" +
                             "USD - Dólar dos Estados Unidos, " +
@@ -93,7 +88,6 @@ public class ConversorDeMoedas {
                     }
                 } while (!conversor.moedaValida(moedaDestino));
 
-                // Validar valor de conversão
                 do {
                     System.out.print("Digite o valor a ser convertido (positivo): ");
                     if (scanner.hasNextDouble()) {
@@ -103,11 +97,10 @@ public class ConversorDeMoedas {
                         }
                     } else {
                         System.out.println("Entrada inválida. Digite um número válido.");
-                        scanner.next(); // limpa a entrada inválida
+                        scanner.next();
                     }
                 } while (valor <= 0);
 
-                // Obter e exibir a taxa de conversão e o resultado da conversão
                 try {
                     Conversao conversao = conversor.obterConversao(moedaOrigem, moedaDestino, valor);
                     if (conversao != null && "success".equals(conversao.getResultado())) {
@@ -120,7 +113,6 @@ public class ConversorDeMoedas {
                     System.out.println("Erro ao se comunicar com a API. Tente novamente mais tarde.");
                 }
 
-                // Opção para continuar ou sair
                 System.out.print("Deseja realizar outra conversão? (sim/não): ");
                 String resposta = scanner.next().toLowerCase();
                 if (!resposta.equals("sim")) {
